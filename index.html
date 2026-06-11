@@ -57,13 +57,14 @@ function generateFakeData() {
   const data = [];
   let price = 100;
 
-  for (let i = 0; i < 50; i++) {
-    price += (Math.random() - 0.5) * 2;
-    data.push({
-      time: i,
-      value: price
-    });
-  }
+  const now = Math.floor(Date.now() / 1000);
+
+for (let i = 0; i < 50; i++) {
+  data.push({
+    time: now + i * 60,  // ✅ tiempo real en segundos
+    value: Math.random() * 10 + 100
+  });
+}
 
   return data;
 }
