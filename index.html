@@ -1,59 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Trading AI Terminal</title>
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-
-  <style>
-    body {
-      background: #0b0f1a;
-      color: white;
-      font-family: monospace;
-    }
-
-    #chart {
-      width: 100%;
-      height: 400px;
-    }
-
-    input, button {
-      margin: 5px;
-      padding: 5px;
-    }
-  </style>
-</head>
-
-<body>
-
-<h2>💹 Trading AI Terminal</h2>
-
-<input id="symbol" placeholder="AAPL" value="AAPL">
-<button onclick="loadData()">Cargar</button>
-
-<div id="chart"></div>
-
-<h3>Señal IA</h3>
-<div id="signal">-</div>
-
 <script>
 const API = "https://trading-ai-gc2b.onrender.com";
 
-const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-  width: 800,
-  height: 400,
-  layout: {
-    backgroundColor: '#0b0f1a',
-    textColor: '#DDD'
-  }
-});
+let chart;
+let lineSeries;
 
-const lineSeries = chart.addLineSeries();
+function initChart() {
+  chart = LightweightCharts.createChart(document.getElementById('chart'), {
+    width: window.innerWidth - 40,
+    height: 400,
+    layout: {
+      backgroundColor: '#0b0f1a',
+      textColor: '#DDD'
+    }
+  });
+
+  lineSeries = chart.addLineSeries();
+}
 
 async function loadData() {
 
   const symbol = document.getElementById("symbol").value;
 
-  // Generar datos fake (por ahora)
   const data = [];
 
   for (let i = 0; i < 50; i++) {
@@ -65,15 +32,17 @@ async function loadData() {
 
   lineSeries.setData(data);
 
-  // Llamar a tu API
+  // tu API real
   const res = await fetch(`${API}/monitor`);
   const result = await res.json();
 
   document.getElementById("signal").innerText = result.join(" | ");
 }
 
-loadData();
+// ✅ Esto asegura que el gráfico se cree correctamente
+window.onload = () => {
+  initChart();
+  loadData();
+};
 </script>
-
-</body>
-</html>
+``
