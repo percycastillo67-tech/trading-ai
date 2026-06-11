@@ -3,8 +3,7 @@
 <head>
   <title>Trading AI Terminal</title>
 
-  <!-- ✅ IMPORTANTE: cargar librería -->
-  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 
   <style>
     body {
@@ -39,14 +38,78 @@
 <div id="signal">-</div>
 
 <script>
+
 const API = "https://trading-ai-gc2b.onrender.com";
 
-document.addEventListener("DOMContentLoaded", async () => {
+let chart;
+let lineSeries;
 
-  const chartContainer = document.getElementById('chart');
+document.addEventListener("DOMContentLoaded", () => {
 
-  const chart = LightweightCharts.createChart(chartContainer, {
-    width: chartContainer.clientWidth,
+  const container = document.getElementById('chart');
+
+  chart = LightweightCharts.createChart(container, {
+    width: container.clientWidth,
     height: 400,
     layout: {
+      background: { color: '#0b0f1a' },
+      textColor: '#DDD'
+    },
+    grid: {
+      vertLines: { color: '#222' },
+      horzLines: { color: '#222' }
+    }
+  });
+
+  // ✅ FORMA CORRECTA
+  lineSeries = chart.addLineSeries({
+    color: '#4CAF50',
+    lineWidth: 2
+  });
+
+  loadData();
+
+});
+
+function generateData() {
+
+  let price = 100;
+  const data = [];
+  const start = Math.floor(Date.now() / 1000);
+
+  for (let i = 0; i < 50; i++) {
+    price += (Math.random() - 0.5) * 2;
+
+    data.push({
+      time: start + i * 60,
+      value: price
+    });
+  }
+
+  return data;
+}
+
+async function loadData() {
+
+  const data = generateData();
+  lineSeries.setData(data);
+
+  try {
+    const res = await fetch(`${API}/monitor`);
+    const result = await res.json();
+
+    document.getElementById("signal").innerText =
+      result.join(" | ");
+  } catch (e) {
+    document.getElementById("signal").innerText =
+      "Error conectando API";
+  }
+
+}
+
+</script>
+
+</body>
+</html>
+``
 
